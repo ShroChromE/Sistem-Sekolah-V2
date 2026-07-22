@@ -6,6 +6,6 @@
     <title>Document</title>
 </head>
 <body>
-    <p>Testicular Cancer</p>
+    <p>Ini adalah halaman daftar siswa</p>
 </body>
 </html>
