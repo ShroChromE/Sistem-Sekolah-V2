@@ -6,32 +6,129 @@ use Illuminate\Http\Request;
 
 class StudentController extends Controller
 {
+    /**
+     * Temporary hardcoded data store.
+     * TODO: replace with a real Student Eloquent model + database table.
+     */
+    private function students()
+    {
+        return [
+            [
+                'id' => 1,
+                'nis' => '22100001',
+                'name' => 'Andi',
+                'gender' => 'L',
+                'class' => 'XII TKJ 3',
+                'major' => 'TKJ',
+            ],
+            [
+                'id' => 2,
+                'nis' => '22100002',
+                'name' => 'Budi',
+                'gender' => 'L',
+                'class' => 'XII AKL',
+                'major' => 'AKL',
+            ],
+        ];
+    }
+
+    private function findStudent($id)
+    {
+        $student = collect($this->students())->firstWhere('id', (int) $id);
+
+        if (! $student) {
+            abort(404, 'Siswa tidak ditemukan');
+        }
+
+        return $student;
+    }
+
     public function index()
     {
-        return "Menampilkan halaman daftar siswa";
+        $title = "Sistem Sekolah - Daftar Siswa";
+        $students = $this->students();
+
+        return view('students.index', [
+            'title' => $title,
+            'students' => $students,
+        ]);
     }
+
     public function show($id)
     {
-        return "Menampilkan siswa dengan ID: $id";
+        $title = "Sistem Sekolah - Detail Siswa";
+        $student = $this->findStudent($id);
+
+        return view('students.show', [
+            'title' => $title,
+            'student' => $student,
+        ]);
     }
+
     public function create()
     {
-        return "Menampilkan halaman tambah siswa";
+        $title = "Sistem Sekolah - Tambah Siswa";
+
+        return view('students.create', [
+            'title' => $title,
+        ]);
     }
+
     public function store(Request $request)
     {
-        return "Melakukan penambahan data siswa";
+        $validated = $request->validate([
+            'nis' => 'required|string|max:20',
+            'name' => 'required|string|max:255',
+            'gender' => 'required|in:L,P',
+            'major' => 'required|string|max:50',
+            'class' => 'required|string|max:50',
+        ]);
+
+        // TODO: persist $validated to the database once a Student model exists.
+
+        return redirect()
+            ->route('students.index')
+            ->with('success', 'Siswa berhasil ditambahkan ke buku induk.');
     }
+
     public function edit($id)
     {
-        return "Menampilkan halaman edit siswa";
+        $title = "Sistem Sekolah - Edit Siswa";
+        $student = $this->findStudent($id);
+
+        return view('students.edit', [
+            'title' => $title,
+            'student' => $student,
+        ]);
     }
+
     public function update(Request $request, $id)
     {
-        return "Melakukan perubahan data siswa";
+        $student = $this->findStudent($id);
+
+        $validated = $request->validate([
+            'nis' => 'required|string|max:20',
+            'name' => 'required|string|max:255',
+            'gender' => 'required|in:L,P',
+            'major' => 'required|string|max:50',
+            'class' => 'required|string|max:50',
+        ]);
+
+        // TODO: persist $validated to the database once a Student model exists.
+
+        return redirect()
+            ->route('students.show', $student['id'])
+            ->with('success', 'Data siswa berhasil diperbarui.');
     }
+
     public function destroy($id)
     {
-        return "Menghapus data siswa";
+        $student = $this->findStudent($id);
+
+        // TODO: delete from the database once a Student model exists.
+
+        return redirect()
+            ->route('students.index')
+            ->with('success', 'Data siswa berhasil dihapus.');
     }
 }
