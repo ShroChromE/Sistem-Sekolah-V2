@@ -114,8 +114,6 @@ class StudentController extends Controller
             'class' => 'required|string|max:50',
         ]);
 
-        // TODO: persist $validated to the database once a Student model exists.
-
         return redirect()
             ->route('students.show', $student['id'])
             ->with('success', 'Data siswa berhasil diperbarui.');
@@ -124,8 +122,6 @@ class StudentController extends Controller
     public function destroy($id)
     {
         $student = $this->findStudent($id);
-
-        // TODO: delete from the database once a Student model exists.
 
         return redirect()
             ->route('students.index')
