@@ -6,59 +6,112 @@ use Illuminate\Http\Request;
 
 class MajorController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+
+    private function majors()
+    {
+        return [
+            [
+                'id' => 1,
+                'code' => 'AKL',
+                'name' => 'Akuntansi dan Keuangan Lembaga',
+                'description' => 'Program keahlian yang mempelajari pencatatan, pengelolaan, dan pelaporan keuangan lembaga atau perusahaan.',
+            ],
+            [
+                'id' => 2,
+                'code' => 'TKJ',
+                'name' => 'Teknik Komputer dan Jaringan',
+                'description' => 'Program keahlian yang mempelajari perakitan komputer, administrasi jaringan, dan keamanan sistem.',
+            ],
+        ];
+    }
+
+    private function findMajor($id)
+    {
+        $major = collect($this->majors())->firstWhere('id', (int) $id);
+
+        if (! $major) {
+            abort(404, 'Jurusan tidak ditemukan');
+        }
+
+        return $major;
+    }
+
     public function index()
     {
-        return "Ini adalah halaman daftar jurusan";
+        $title = "Sistem Sekolah - Daftar Jurusan";
+        $majors = $this->majors();
+
+        return view('majors.index', [
+            'title' => $title,
+            'majors' => $majors,
+        ]);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
+    public function show($id)
+    {
+        $title = "Sistem Sekolah - Detail Jurusan";
+        $major = $this->findMajor($id);
+
+        return view('majors.show', [
+            'title' => $title,
+            'major' => $major,
+        ]);
+    }
+
     public function create()
     {
-        return "Ini adalah halaman untuk membuat jurusan baru";
+        $title = "Sistem Sekolah - Tambah Jurusan";
+
+        return view('majors.create', [
+            'title' => $title,
+        ]);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
-        return "Menyimpan data jurusan baru";
+        $validated = $request->validate([
+            'code' => 'required|string|max:10',
+            'name' => 'required|string|max:255',
+            'description' => 'nullable|string',
+        ]);
+
+        return redirect()
+            ->route('majors.index')
+            ->with('success', 'Jurusan berhasil ditambahkan.');
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
+    public function edit($id)
     {
-        return "Menampilkan detail jurusan dengan ID: {$id}";
+        $title = "Sistem Sekolah - Edit Jurusan";
+        $major = $this->findMajor($id);
+
+        return view('majors.edit', [
+            'title' => $title,
+            'major' => $major,
+        ]);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
+    public function update(Request $request, $id)
     {
-        return "Ini adalah halaman untuk mengedit jurusan dengan ID: {$id}";
+        $major = $this->findMajor($id);
+
+        $validated = $request->validate([
+            'code' => 'required|string|max:10',
+            'name' => 'required|string|max:255',
+            'description' => 'nullable|string',
+        ]);
+
+        return redirect()
+            ->route('majors.show', $major['id'])
+            ->with('success', 'Data jurusan berhasil diperbarui.');
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
+    public function destroy($id)
     {
-        return "Memperbarui data jurusan dengan ID: {$id}";
-    }
+        $major = $this->findMajor($id);
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        return "Menghapus data jurusan dengan ID: {$id}";
+        return redirect()
+            ->route('majors.index')
+            ->with('success', 'Data jurusan berhasil dihapus.');
     }
 }

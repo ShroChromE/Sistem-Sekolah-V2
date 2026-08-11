@@ -6,10 +6,6 @@ use Illuminate\Http\Request;
 
 class StudentController extends Controller
 {
-    /**
-     * Temporary hardcoded data store.
-     * TODO: replace with a real Student Eloquent model + database table.
-     */
     private function students()
     {
         return [
@@ -83,8 +79,6 @@ class StudentController extends Controller
             'major' => 'required|string|max:50',
             'class' => 'required|string|max:50',
         ]);
-
-        // TODO: persist $validated to the database once a Student model exists.
 
         return redirect()
             ->route('students.index')

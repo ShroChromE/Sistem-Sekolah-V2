@@ -7,11 +7,10 @@ use Illuminate\Http\Request;
 
 class DestroyController extends Controller
 {
-    /**
-     * Handle the incoming request.
-     */
-    public function __invoke(Request $request)
+    public function __invoke(Request $request, $id)
     {
-        return "Menghapus data kelas dengan ID: {$request->id}";
+        return redirect()
+            ->route('classes.index')
+            ->with('success', 'Data kelas berhasil dihapus.');
     }
 }
