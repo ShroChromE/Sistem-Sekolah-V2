@@ -22,6 +22,12 @@ class MajorController extends Controller
                 'name' => 'Teknik Komputer dan Jaringan',
                 'description' => 'Program keahlian yang mempelajari perakitan komputer, administrasi jaringan, dan keamanan sistem.',
             ],
+            [
+                'id' => 3,
+                'code' => 'BD',
+                'name' => 'Bisnis Digital',
+                'description' => 'Program keahlian yang membekali murid dengan kompetensi pemasaran dan pengelolaan bisnis berbasis digital.',
+            ],
         ];
     }
 

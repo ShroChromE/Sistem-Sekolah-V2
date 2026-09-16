@@ -40,6 +40,7 @@ class EditController extends Controller
         $majors = [
             ['id' => 1, 'code' => 'AKL', 'name' => 'Akuntansi dan Keuangan Lembaga'],
             ['id' => 2, 'code' => 'TKJ', 'name' => 'Teknik Komputer dan Jaringan'],
+            ['id' => 3, 'code' => 'BD', 'name' => 'Bisnis Digital'],
         ];
 
         $teachers = [
