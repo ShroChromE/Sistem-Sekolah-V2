@@ -16,14 +16,14 @@ class IndexController extends Controller
                 'id' => 1,
                 'name' => 'XII AKL 1',
                 'grade' => 'XII',
-                'major' => 'Akuntansi dan Keuangan Lembaga',
+                'major' => 'AKL',
                 'homeroom_teacher' => 'Budi Santoso',
             ],
             [
                 'id' => 2,
                 'name' => 'XII TKJ 1',
                 'grade' => 'XII',
-                'major' => 'Teknik Komputer dan Jaringan',
+                'major' => 'TKJ',
                 'homeroom_teacher' => 'Siti Aminah',
             ],
         ];

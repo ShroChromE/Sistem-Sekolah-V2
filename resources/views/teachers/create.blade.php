@@ -1,5 +1,3 @@
-<!-- Napa kau 404???? -->
-
 @extends('layouts.app')
 
 @section('title', $title)
