@@ -4,8 +4,9 @@ namespace App\Http\Requests\Student;
 
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
-class StoreRequest extends FormRequest
+class UpdateRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -22,23 +23,14 @@ class StoreRequest extends FormRequest
      */
     public function rules(): array
     {
+        $studentId = $this->route('student')?->id;
+
         return [
-            'nis' => ['required', 'string', 'size:4', 'unique:students,nis'],
+            'nis' => ['required', 'string', 'size:4', 'unique:students,nis'. $this->student->id],
             'name' => ['required', 'string'],
             'gender' => ['required', 'string', 'in:L,P'],
             'major' => ['required', 'string', 'in:TKJ,AKL,BiD'],
-            'class' => ['required', 'string']
-        ];
-    }
-
-    public function attributes()
-    {
-        return[
-            'nis' => 'Nomor Induk Siswa',
-            'name' => 'Nama Lengkap',
-            'gender' => 'Jenis Kelamin',
-            'major' => 'Jurusan',
-            'class' => 'Kelas'
+            'class' => ['required', 'string'],
         ];
     }
 }
