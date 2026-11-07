@@ -1,3 +1,4 @@
+{{-- Header Start--}}
 <header class="bg-[#16213A] text-white">
     <div class="mx-auto flex max-w-5xl items-center justify-between px-6 py-5">
         <a href="" class="flex items-center gap-3">
@@ -12,6 +13,12 @@
             <a href="{{ route('classes.index') }}" class="text-white/55 hover:text-white">Kelas</a>
             <a href="{{ route('majors.index') }}" class="text-white/55 hover:text-white">Jurusan</a>
         </nav>
+
+        <form action="{{ route('logout') }}" method="POST">
+            @csrf
+            <button type="submit" class="py-2 px-4 bg-amber-800 rounded-lg cursor-pointer">Logout</button>
+        </form>
     </div>
     <div class="h-0.5 bg-[#A16207]"></div>
 </header>
+{{-- Header End --}}

@@ -6,45 +6,10 @@ use Illuminate\Http\Request;
 
 class TeacherController extends Controller
 {
-    private function teachers()
-    {
-        return [
-            [
-                'id' => 1,
-                'nip' => '198501012024',
-                'name' => 'Budi Santoso',
-                'gender' => 'Laki-Laki',
-                'subject' => 'Akuntansi Dasar',
-                'phone_number' => '081234560001',
-                'status' => 'Aktif',
-            ],
-            [
-                'id' => 2,
-                'nip' => '198703152024',
-                'name' => 'Siti Aminah',
-                'gender' => 'Perempuan',
-                'subject' => 'Jaringan Komputer',
-                'phone_number' => '081234560002',
-                'status' => 'Aktif',
-            ],
-        ];
-    }
-
-    private function findTeacher($id)
-    {
-        $teacher = collect($this->teachers())->firstWhere('id', (int) $id);
-
-        if (! $teacher) {
-            abort(404, 'Guru tidak ditemukan');
-        }
-
-        return $teacher;
-    }
-
     public function index()
     {
         $title = "Sistem Sekolah - Daftar Guru";
-        $teachers = $this->teachers();
+        $teachers = $this->getTeachers();
 
         return view('teachers.index', [
             'title' => $title,
@@ -74,18 +39,9 @@ class TeacherController extends Controller
 
     public function store(Request $request)
     {
-        $validated = $request->validate([
-            'nip' => 'required|string|max:30',
-            'name' => 'required|string|max:255',
-            'gender' => 'required|in:Laki-Laki,Perempuan',
-            'subject' => 'required|string|max:255',
-            'phone_number' => 'required|string|max:20',
-            'status' => 'required|in:Aktif,Tidak Aktif',
-        ]);
-
         return redirect()
             ->route('teachers.index')
-            ->with('success', 'Guru berhasil ditambahkan.');
+            ->with('success', 'Guru berhasil ditambahkan ke buku induk.');
     }
 
     public function edit($id)
@@ -102,15 +58,6 @@ class TeacherController extends Controller
     public function update(Request $request, $id)
     {
         $teacher = $this->findTeacher($id);
-
-        $validated = $request->validate([
-            'nip' => 'required|string|max:30',
-            'name' => 'required|string|max:255',
-            'gender' => 'required|in:Laki-Laki,Perempuan',
-            'subject' => 'required|string|max:255',
-            'phone_number' => 'required|string|max:20',
-            'status' => 'required|in:Aktif,Tidak Aktif',
-        ]);
 
         return redirect()
             ->route('teachers.show', $teacher['id'])

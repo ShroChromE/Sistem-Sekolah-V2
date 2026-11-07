@@ -7,16 +7,8 @@ use Illuminate\Http\Request;
 
 class StoreController extends Controller
 {
-
     public function __invoke(Request $request)
     {
-        $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'grade' => 'required|in:X,XI,XII',
-            'major_id' => 'required|integer',
-            'teacher_id' => 'required|integer',
-        ]);
-
         return redirect()
             ->route('classes.index')
             ->with('success', 'Kelas berhasil ditambahkan.');

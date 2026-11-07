@@ -3,62 +3,51 @@
 namespace App\Http\Controllers;
 
 use App\Models\Student;
+use App\Models\SchoolClass;
+use App\Models\Major;
 use App\Http\Requests\Student\StoreRequest;
 use App\Http\Requests\Student\UpdateRequest;
+use Illuminate\Http\Request;
 
 class StudentController extends Controller
 {
-    private function students()
-    {
-        return [
-            [
-                'id' => 1,
-                'nis' => '22100001',
-                'name' => 'Andi',
-                'gender' => 'L',
-                'class' => 'XII TKJ 3',
-                'major' => 'TKJ',
-            ],
-            [
-                'id' => 2,
-                'nis' => '22100002',
-                'name' => 'Budi',
-                'gender' => 'L',
-                'class' => 'XII AKL',
-                'major' => 'AKL',
-            ],
-        ];
-    }
-
-    private function findStudent($id)
-    {
-        $student = collect($this->students())->firstWhere('id', (int) $id);
-
-        if (! $student) {
-            abort(404, 'Siswa tidak ditemukan');
-        }
-
-        return $student;
-    }
-
-    public function index()
+    public function index(Request $request)
     {
         $title = "Sistem Sekolah - Daftar Siswa";
+        $search = $request->query('search');
+        $class = $request->query('class');
+        $major = $request->query('major');
 
-        $students = Student::select(['id', 'nis', 'name', 'class', 'major'])->get();
- 
+        $students = Student::with(['major', 'schoolClass'])
+            ->select(['id', 'nis', 'name', 'gender', 'major_id', 'class_id'])
+            ->when($search, function ($query, $search) {
+                $query->where(function ($query) use ($search) {
+                    $query->where('name', 'like', "%{$search}%")
+                        ->orWhere('nis', 'like', "%{$search}%");
+                });
+            })
+            ->when($class, fn($query, $class) => $query->where('class_id', '=', $class))
+            ->when($major, fn($query, $major) => $query->where('major_id', '=', $major))
+            ->paginate(10)
+            ->withQueryString();
+        $schoolClasses = SchoolClass::orderBy('name')->get();
+        $majors = Major::orderBy('name')->get();
+
         return view('students.index', [
-            'title' => $title,
-            'students' => $students,
+            'title'         => $title,
+            'students'      => $students,
+            'schoolClasses' => $schoolClasses,
+            'majors'        => $majors
         ]);
     }
 
     public function show(Student $student)
     {
         $title = "Sistem Sekolah - Detail Siswa";
+        $student->load(['major', 'schoolClass', 'user']);
 
         return view('students.show', [
-            'title' => $title,
+            'title'   => $title,
             'student' => $student,
         ]);
     }
@@ -68,18 +57,18 @@ class StudentController extends Controller
         $title = "Sistem Sekolah - Tambah Siswa";
 
         return view('students.create', [
-            'title' => $title,
+            'title'         => $title,
+            'schoolClasses' => SchoolClass::orderBy('name')->get(),
+            'majors'        => Major::orderBy('name')->get(),
         ]);
     }
 
     public function store(StoreRequest $request)
     {
         $validatedRequest = $request->validated();
-
         Student::create($validatedRequest);
 
         return redirect()->route('students.index');
-            
     }
 
     public function edit(Student $student)
@@ -87,15 +76,16 @@ class StudentController extends Controller
         $title = "Sistem Sekolah - Edit Siswa";
 
         return view('students.edit', [
-            'title' => $title,
-            'student' => $student,
+            'title'         => $title,
+            'student'       => $student,
+            'schoolClasses' => SchoolClass::orderBy('name')->get(),
+            'majors'        => Major::orderBy('name')->get(),
         ]);
     }
 
     public function update(Student $student, UpdateRequest $request)
     {
         $validatedRequest = $request->validated();
-
         $student->update($validatedRequest);
 
         return redirect()->route('students.index');

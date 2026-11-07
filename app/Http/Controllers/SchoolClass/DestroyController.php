@@ -7,8 +7,10 @@ use Illuminate\Http\Request;
 
 class DestroyController extends Controller
 {
-    public function __invoke(Request $request, $id)
+    public function __invoke($id)
     {
+        $class = $this->findClass($id);
+
         return redirect()
             ->route('classes.index')
             ->with('success', 'Data kelas berhasil dihapus.');
