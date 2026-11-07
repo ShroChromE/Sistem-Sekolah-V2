@@ -6,46 +6,10 @@ use Illuminate\Http\Request;
 
 class MajorController extends Controller
 {
-
-    private function majors()
-    {
-        return [
-            [
-                'id' => 1,
-                'code' => 'AKL',
-                'name' => 'Akuntansi dan Keuangan Lembaga',
-                'description' => 'Program keahlian yang mempelajari pencatatan, pengelolaan, dan pelaporan keuangan lembaga atau perusahaan.',
-            ],
-            [
-                'id' => 2,
-                'code' => 'TKJ',
-                'name' => 'Teknik Komputer dan Jaringan',
-                'description' => 'Program keahlian yang mempelajari perakitan komputer, administrasi jaringan, dan keamanan sistem.',
-            ],
-            [
-                'id' => 3,
-                'code' => 'BD',
-                'name' => 'Bisnis Digital',
-                'description' => 'Program keahlian yang membekali murid dengan kompetensi pemasaran dan pengelolaan bisnis berbasis digital.',
-            ],
-        ];
-    }
-
-    private function findMajor($id)
-    {
-        $major = collect($this->majors())->firstWhere('id', (int) $id);
-
-        if (! $major) {
-            abort(404, 'Jurusan tidak ditemukan');
-        }
-
-        return $major;
-    }
-
-    public function index()
+        public function index()
     {
         $title = "Sistem Sekolah - Daftar Jurusan";
-        $majors = $this->majors();
+        $majors = $this->getMajors();
 
         return view('majors.index', [
             'title' => $title,
@@ -75,15 +39,10 @@ class MajorController extends Controller
 
     public function store(Request $request)
     {
-        $validated = $request->validate([
-            'code' => 'required|string|max:10',
-            'name' => 'required|string|max:255',
-            'description' => 'nullable|string',
-        ]);
 
         return redirect()
             ->route('majors.index')
-            ->with('success', 'Jurusan berhasil ditambahkan.');
+            ->with('success', 'Jurusan berhasil ditambahkan ke buku induk.');
     }
 
     public function edit($id)
@@ -100,12 +59,6 @@ class MajorController extends Controller
     public function update(Request $request, $id)
     {
         $major = $this->findMajor($id);
-
-        $validated = $request->validate([
-            'code' => 'required|string|max:10',
-            'name' => 'required|string|max:255',
-            'description' => 'nullable|string',
-        ]);
 
         return redirect()
             ->route('majors.show', $major['id'])
